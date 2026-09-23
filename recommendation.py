@@ -2,9 +2,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-books = pd.read_csv("books.csv")
-
-books = books.fillna("")
+books = pd.read_csv("books.csv").fillna("")
 
 books["combined_features"] = (
     books["title"] + " " +
@@ -14,16 +12,15 @@ books["combined_features"] = (
 )
 
 tfidf = TfidfVectorizer(
-    stop_words="english"
+    analyzer="char",
+    ngram_range=(2, 5)
 )
 
 tfidf_matrix = tfidf.fit_transform(
     books["combined_features"]
 )
 
-similarity = cosine_similarity(
-    tfidf_matrix
-)
+similarity = cosine_similarity(tfidf_matrix)
 
 indices = pd.Series(
     books.index,
